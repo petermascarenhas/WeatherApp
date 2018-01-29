@@ -1,0 +1,109 @@
+<html>
+<head>
+    <title>Weather App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="./app/styles.css">
+    <!-- 1. Load libraries -->
+    <!-- Polyfill(s) for older browsers -->
+    <script src="node_modules/core-js/client/shim.min.js"></script>
+    <script src="node_modules/zone.js/dist/zone.js"></script>
+    <script src="node_modules/reflect-metadata/Reflect.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.simpleWeather/3.1.0/jquery.simpleWeather.min.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAp7LuCisAk3zhGsMPiB3aWAmYMQsVmnZk&libraries=places"></script>
+
+    <!-- 2. Configure SystemJS -->
+    <script src="systemjs.config.js"></script>
+    <script>
+        System.import('app').catch(function(err){ console.error(err); });
+    </script>
+
+
+</head>
+<!-- 3. Display the application -->
+<body>
+
+<script>
+
+    $(document).ready(function() {
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var lat = position.coords.latitude;
+                var long = position.coords.longitude;
+                var point = new google.maps.LatLng(lat, long);
+                new google.maps.Geocoder().geocode(
+                    {'latLng': point},
+                    function (res, status) {
+                        var zip = res[0].formatted_address.match(/,\s\w{2}\s(\d{5})/);
+                        $.simpleWeather({
+                            location: zip[1],
+                            woeid: '',
+                            unit: 'c',
+                            success: function (weather) {
+                                html = '<h2><i class="icon-' + weather.code + '"></i> ' + weather.temp + '&deg;' + weather.units.temp + '</h2>';
+                                // html += '<ul><li>' + weather.city + ', ' + weather.region + '</li>';
+                                html += '<p class="currently">' + weather.currently + '</p>';
+                                // html += '<li>' + weather.wind.direction + ' ' + weather.wind.speed + ' ' + weather.units.speed + '</li></ul>';
+                                $("#weather").html(html);
+                                console.log(weather.currently);
+                                if(weather.currently.includes("Cloudy")){
+                                    $("body").css(
+                                        {
+                                            "transition": "background-image 2s ease-out",
+                                            "background-image":"url(https://thumbs.gfycat.com/WearyPaltryHornbill-size_restricted.gif)"
+                                        }
+                                    )
+                                }
+                                else if(weather.currently.includes("Sunny")){
+                                    $("body").css(
+                                        {
+                                            "transition": "background-image 2s ease",
+                                            "background-image":"url(https://pa1.narvii.com/6548/7f6ecbde128498ad6bbd157d5e621af94639d2e6_hq.gif)"
+                                        }
+                                    )
+                                }
+                                else if(weather.currently.includes("Clear")){
+                                    $("body").css(
+                                        {
+                                            "transition": "background-image 1s ease-in-out",
+                                            "background-image":"url(https://media.giphy.com/media/V5EkPVDbEzw9a/giphy.gif)"
+                                        }
+                                    )
+                                }
+                                else if(weather.currently.includes("Snow")){
+                                    console.log("in here");
+                                    $("body").css(
+                                        {
+                                            "transition": "background-image 2s ease-in-out",
+                                            "background-image":"url(http://bestanimations.com/Nature/winter/snow-animated-gif.gif)"
+                                        }
+                                    )
+                                }
+
+                            },
+                            error: function (error) {
+                                $("#weather").html('<p>' + error + '</p>');
+                            }
+                        });
+                    }
+                );
+            });
+        }
+    });
+
+</script>
+
+<div id="weather" class="temp"></div>
+<my-app>Loading...</my-app>
+
+</body>
+</html>

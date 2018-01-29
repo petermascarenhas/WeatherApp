@@ -1,0 +1,42 @@
+
+
+<link rel="stylesheet" type="text/css" href="../../styles.css">
+
+
+<!-- Email capture -->
+<div class="container box">
+    <h3> Weather App</h3>
+    <hr>
+    <div class="row">
+        <div class="center">
+            <h5>Did you like this article?</h5>
+            <h5>Sign up to get the latest content first.</h5>
+        </div>
+        <div class="col-md-6 col-md-offset-3 email-capture">
+            <form role="form" data-toggle="validator" (submit)="addSubscriber($event)">
+                <div class="form-group">
+                    <label for="inputEmail" class="control-label" >Email address</label>
+                    <input type="email" class="form-control" id="inputEmail" [(ngModel)]="email" name="email"
+                           placeholder="Email" data-error="Invalid email address" required>
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="location" class="control-label">Location</label>
+
+                    <!--<select id="location" class="form-control" ng-model="location" ng-options="l for l in locations">-->
+                        <!--<option value="" disabled hidden selected>View current values</option>-->
+                    <!--</select>-->
+                    <select id="location" class="form-control"  [(ngModel)]="location" name="location" required>
+                        <option value="" disabled hidden> Where do you live? </option>
+                        <option *ngFor="let l of locations" >{{l}}</option>
+                    </select>
+
+                    <div class="help-block with-errors"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div> <!-- /end of Row-->
+</div> <!-- End of Email capture-->
